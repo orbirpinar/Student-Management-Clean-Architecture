@@ -25,7 +25,9 @@ namespace Application.Features.Student.Commands.CreateStudent
         public DateOnly BirthDate { get; }
         public string? ProfilePicture { get; }
     }
-    
+
+
+
     public class CreateStudentCommandHandler: IRequestHandler<CreateStudentCommand,Guid>
     {
         private readonly IApplicationDbContext _context;

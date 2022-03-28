@@ -3,27 +3,20 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Common;
 using Domain.Entities;
-using Duende.IdentityServer.EntityFramework.Options;
-using Infrastructure.Identity;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Persistence
 {
-    public class ApplicationDbContext : ApiAuthorizationDbContext<User>, IApplicationDbContext
+    public class AppDbContext : DbContext, IApplicationDbContext
     {
         private readonly IDateTime _dateTime;
-        private readonly ICurrentUserService _currentUserService;
 
 
-        public ApplicationDbContext(
-            DbContextOptions<ApplicationDbContext> options, 
-            ICurrentUserService currentUserService, IDateTime dateTime,
-             IOptions<OperationalStoreOptions> operationalStoreOptions) 
-            : base(options,operationalStoreOptions)
+        public AppDbContext(
+            DbContextOptions<AppDbContext> options, IDateTime dateTime
+                )
+            : base(options)
         {
-            _currentUserService = currentUserService;
             _dateTime = dateTime;
         }
 
@@ -43,12 +36,10 @@ namespace Infrastructure.Persistence
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = _currentUserService.UserId;
                         entry.Entity.Created = _dateTime.Now;
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedBy = _currentUserService.UserId;
                         entry.Entity.LastModified = _dateTime.Now;
                         break;
                 }

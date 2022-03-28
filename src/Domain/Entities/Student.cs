@@ -8,7 +8,7 @@ namespace Domain.Entities
     public class Student: AuditableEntity
     {
         public Guid Id { get; set; }
-        public string SchoolNumber { get; set; } = default!;
+        public string? SchoolNumber { get; set; } = default!;
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public Gender Gender { get; set; }

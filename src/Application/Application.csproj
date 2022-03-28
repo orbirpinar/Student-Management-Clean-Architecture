@@ -8,8 +8,6 @@
 
     <ItemGroup>
       <Folder Include="Features\ClassRoom" />
-      <Folder Include="Features\Student\Commands\DeleteStudent" />
-      <Folder Include="Features\Student\Commands\UpdateStudent" />
       <Folder Include="Features\Teacher" />
     </ItemGroup>
 

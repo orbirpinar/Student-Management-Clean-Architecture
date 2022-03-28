@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6ED356A7-8B47-4613-AD01-C85CF28491BD}"
+ProjectSection(SolutionItems) = preProject
+	src\docker-compose.yml = src\docker-compose.yml
+EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{664D406C-2F83-48F0-BFC3-408D5CB53C65}"
 EndProject
@@ -18,6 +21,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "src\WebUI\WebUI.csproj", "{E2948DDB-B2AC-4F65-80A2-1B8643CEAB63}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.UnitTests", "tests\Domain.UnitTests\Domain.UnitTests.csproj", "{4D3A7F7F-D3E0-430F-8D08-322814CE86C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization", "src\Authorization\Authorization.csproj", "{52E4DEF3-8898-48C5-A9D0-C8C91394638E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +54,10 @@ Global
 		{4D3A7F7F-D3E0-430F-8D08-322814CE86C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D3A7F7F-D3E0-430F-8D08-322814CE86C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D3A7F7F-D3E0-430F-8D08-322814CE86C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52E4DEF3-8898-48C5-A9D0-C8C91394638E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52E4DEF3-8898-48C5-A9D0-C8C91394638E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52E4DEF3-8898-48C5-A9D0-C8C91394638E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52E4DEF3-8898-48C5-A9D0-C8C91394638E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +68,7 @@ Global
 		{F846FE11-9CE2-4415-8C49-A7A3419DAFB7} = {6ED356A7-8B47-4613-AD01-C85CF28491BD}
 		{E2948DDB-B2AC-4F65-80A2-1B8643CEAB63} = {6ED356A7-8B47-4613-AD01-C85CF28491BD}
 		{4D3A7F7F-D3E0-430F-8D08-322814CE86C7} = {664D406C-2F83-48F0-BFC3-408D5CB53C65}
+		{52E4DEF3-8898-48C5-A9D0-C8C91394638E} = {6ED356A7-8B47-4613-AD01-C85CF28491BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3CB609D9-5D54-4C11-A371-DAAC8B74E430}

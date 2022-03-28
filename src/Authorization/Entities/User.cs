@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure.Identity
+namespace Authorization.Entities
 {
     public class User: IdentityUser
     {
+        
     }
 }

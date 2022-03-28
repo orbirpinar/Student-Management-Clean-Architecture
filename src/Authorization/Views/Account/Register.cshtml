@@ -1,0 +1,20 @@
+@model Authorization.ViewModels.RegisterViewModel
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+
+<form autocomplete="off" asp-route="Register">
+    <div class="card">
+        <input type="text" class="form-control form-control-lg" placeholder="Username" asp-for="Username" autofocus>
+        <input type="text" class="form-control form-control-lg" placeholder="Username" asp-for="Email" autofocus>
+        <input type="password" class="form-control form-control-lg" placeholder="Password" asp-for="Password">
+        <input type="password" class="form-control form-control-lg form-control-last" placeholder="Confirm Password" asp-for="ConfirmPassword">
+    </div>
+    <p>
+        <button type="submit" class="btn btn-dark btn-block mt-3">Login</button>
+    </p>
+</form>
