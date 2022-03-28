@@ -29,6 +29,8 @@ namespace Infrastructure.Persistence
         public DbSet<StudentScore> StudentScores => Set<StudentScore>();
         public DbSet<TeacherSubject> TeacherSubjects => Set<TeacherSubject>();
 
+        public DbSet<Account> Accounts => Set<Account>();
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
@@ -71,6 +73,14 @@ namespace Infrastructure.Persistence
                 .HasOne(ss => ss.Teacher)
                 .WithMany(s => s.TeacherSubjects)
                 .HasForeignKey(ss => ss.TeacherId);
+
+            builder.Entity<Account>().HasOne(a => a.Teacher)
+                .WithOne(t => t.Account)
+                .HasForeignKey<Teacher>(t => t.AccountId);
+
+            builder.Entity<Account>().Property(a => a.Id)
+                .ValueGeneratedNever();
+
         }
     }
 }
