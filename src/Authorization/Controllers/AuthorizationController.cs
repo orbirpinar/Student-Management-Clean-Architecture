@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
@@ -13,6 +14,7 @@ using OpenIddict.Server.AspNetCore;
 
 namespace Authorization.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class AuthorizationController : Controller
     {
         [HttpPost("~/connect/token")]
@@ -34,6 +36,7 @@ namespace Authorization.Controllers
                 // Add some claim, don't forget to add destination otherwise it won't be added to the access token.
 
                 claimsPrincipal = new ClaimsPrincipal(identity);
+                claimsPrincipal.SetAudiences(request.ClientId);
 
                 claimsPrincipal.SetScopes(request.GetScopes());
             }
@@ -59,7 +62,7 @@ namespace Authorization.Controllers
                 throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
         
             // Retrieve the user principal stored in the authentication cookie.
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var result = await HttpContext.AuthenticateAsync();
         
             // If the user principal can't be extracted, redirect the user to the login page.
             if (!result.Succeeded)
@@ -83,8 +86,7 @@ namespace Authorization.Controllers
             var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            claimsPrincipal.SetAudiences("student-management-api");
-
+            claimsPrincipal.SetAudiences(request.ClientId!);
             // Set requested scopes (this is not done automatically)
             claimsPrincipal.SetScopes(request.GetScopes());
             

@@ -1,14 +1,12 @@
-using System.Collections.Generic;
-using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Authorization.Entities;
 using Authorization.ViewModels;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Events;
 
 namespace Authorization.Controllers
 {
@@ -16,12 +14,14 @@ namespace Authorization.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly IBus _bus;
 
 
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, IBus bus)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _bus = bus;
         }
 
         [HttpGet]
@@ -47,6 +47,9 @@ namespace Authorization.Controllers
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
             if (result.Succeeded)
             {
+                // TODO RAISE LOGIN EVENT
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _bus.Publish <UserLoggedIn>(new {Id = userId, UserName = model.Username, Email = model.Username});
                 if (!string.IsNullOrEmpty(model.ReturnUrl))
                 {
                     return Redirect(model.ReturnUrl);
@@ -60,6 +63,13 @@ namespace Authorization.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -70,6 +80,7 @@ namespace Authorization.Controllers
             var result = await _userManager.CreateAsync(user, register.Password);
             if (result.Succeeded)
             {
+                await _bus.Publish<UserRegistered>(new {user.Id,user.Email, user.UserName,user.Firstname,user.Lastname});
                 await _signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
             }

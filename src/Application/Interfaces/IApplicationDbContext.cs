@@ -14,6 +14,7 @@ namespace Application.Interfaces
         public DbSet<Exam> Exams { get; }
         public DbSet<StudentScore> StudentScores { get; }
         public DbSet<TeacherSubject> TeacherSubjects { get; }
+        
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

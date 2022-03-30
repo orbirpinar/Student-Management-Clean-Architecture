@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -14,7 +15,7 @@ namespace Infrastructure.Persistence
 
         public AppDbContext(
             DbContextOptions<AppDbContext> options, IDateTime dateTime
-                )
+        )
             : base(options)
         {
             _dateTime = dateTime;
@@ -29,7 +30,6 @@ namespace Infrastructure.Persistence
         public DbSet<StudentScore> StudentScores => Set<StudentScore>();
         public DbSet<TeacherSubject> TeacherSubjects => Set<TeacherSubject>();
 
-        public DbSet<Account> Accounts => Set<Account>();
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -74,13 +74,17 @@ namespace Infrastructure.Persistence
                 .WithMany(s => s.TeacherSubjects)
                 .HasForeignKey(ss => ss.TeacherId);
 
-            builder.Entity<Account>().HasOne(a => a.Teacher)
-                .WithOne(t => t.Account)
-                .HasForeignKey<Teacher>(t => t.AccountId);
-
-            builder.Entity<Account>().Property(a => a.Id)
-                .ValueGeneratedNever();
-
+            //Value Object
+            builder.Entity<Teacher>().OwnsOne(t => t.Account, navigationBuilder =>
+            {
+                navigationBuilder.Property(account => account.Id).HasColumnName("AccountId");
+                navigationBuilder.Property(account => account.Lastname).HasColumnName("Lastname");
+                navigationBuilder.Property(account => account.Email).HasColumnName("Email");
+                navigationBuilder.Property(account => account.Username).HasColumnName("Username");
+                navigationBuilder.Property(account => account.Firstname).HasColumnName("Firstname");
+                navigationBuilder.Property(account => account.Lastname).HasColumnName("Lastname");
+                
+            });
         }
     }
 }

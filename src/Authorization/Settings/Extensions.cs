@@ -1,11 +1,16 @@
 using System;
+using System.Net.Http;
+using Authorization.Common.Settings;
 using Authorization.Data;
 using Authorization.Entities;
+using Authorization.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenIddict.Abstractions;
+using OpenIddict.Validation.SystemNetHttp;
 
 namespace Authorization.Settings
 {
@@ -20,7 +25,7 @@ namespace Authorization.Settings
             });
         }
 
-        public static void AddOpenIdConnect(this IServiceCollection services)
+        public static void AddOpenIdConnect(this IServiceCollection services,IConfiguration configuration)
         {
             services.Configure<IdentityOptions>(options =>
             {
@@ -29,6 +34,7 @@ namespace Authorization.Settings
                 options.ClaimsIdentity.RoleClaimType = OpenIddictConstants.Claims.Role;
             });
 
+            var openIddictConfig = configuration.GetSection("Authorization").Get<AuthorizationSettings>();
             services.AddOpenIddict()
                 .AddCore(options => options.UseEntityFrameworkCore().UseDbContext<ApplicationDbContext>())
                 .AddServer(options =>
@@ -59,12 +65,44 @@ namespace Authorization.Settings
                         .EnableLogoutEndpointPassthrough()
                         .EnableTokenEndpointPassthrough()
                         .EnableUserinfoEndpointPassthrough();
+                })
+                .AddValidation(options =>
+                {
+                    
+                    options.SetIssuer(openIddictConfig.Issuer);
+                    options.AddAudiences(openIddictConfig.ClientId);
+                    options.UseIntrospection()
+                        .SetClientId(openIddictConfig.ClientId)
+                        .SetClientSecret(openIddictConfig.ClientSecret);
+
+                    options.UseAspNetCore();
+                    options.UseSystemNetHttp();
+                    options.AddAudiences("student-management-api");
+                    options.AddAudiences("student-management-authorize");
                 });
 
-
+services.AddHttpClient(typeof(OpenIddictValidationSystemNetHttpOptions).Assembly.GetName().Name)
+                .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler {ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator});
             services.AddDefaultIdentity<User>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+        }
+
+        public static void AddRabbitMq(this IServiceCollection services)
+        {
+            services.AddMassTransit(x =>
+            {
+                x.SetKebabCaseEndpointNameFormatter();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("rabbitmq://localhost",  h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
         }
     }
 }

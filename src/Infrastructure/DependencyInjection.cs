@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using Application.Interfaces;
 using Infrastructure.Identity;
@@ -19,6 +20,7 @@ namespace Infrastructure
             {
                 options.UseNpgsql(configuration.GetConnectionString("PostgresConnection"),
                     b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
+                AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             });
 
             var openIddictConfig = configuration.GetSection("Authorization").Get<AuthorizationConfig>();

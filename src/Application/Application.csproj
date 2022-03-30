@@ -7,12 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Features\Account\Command" />
       <Folder Include="Features\ClassRoom" />
-      <Folder Include="Features\Teacher" />
+      <Folder Include="Features\Teacher\Queries" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="10.4.0" />
+      <PackageReference Include="MassTransit" Version="8.0.0" />
+      <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.0" />
       <PackageReference Include="MediatR" Version="10.0.1" />
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
@@ -20,6 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
 
 </Project>

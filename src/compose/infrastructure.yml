@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  app_db:
+    container_name: school_database
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-school_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      PGDATA: /data/postgres
+    volumes:
+      - school_postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - school_app_network
+
+  idendtity_db:
+    container_name: identity_database
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-school_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      PGDATA: /data/postgres
+    volumes:
+      - identity_postgres:/data/postgres
+    ports:
+      - "5434:5432"
+    restart: unless-stopped
+    networks:
+      - school_app_network
+  
+  rabbitmq:
+    image: masstransit/rabbitmq
+    container_name: school_queue
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - school_app_network
+
+volumes:
+  school_postgres:
+  identity_postgres:
+    
+networks:
+  school_app_network:

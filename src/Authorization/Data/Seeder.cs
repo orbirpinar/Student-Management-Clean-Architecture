@@ -16,8 +16,9 @@ namespace Authorization.Data
             context.Database.EnsureCreated();
 
             var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
-            var existingClientApp = manager.FindByClientIdAsync("student-management-api").GetAwaiter().GetResult();
-            if (existingClientApp == null)
+            var studentClientApp = manager.FindByClientIdAsync("student-management-api").GetAwaiter().GetResult();
+            var authorizeClientApp = manager.FindByClientIdAsync("student-management-authorize").GetAwaiter().GetResult();
+            if (studentClientApp == null)
             {
                 manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
@@ -25,6 +26,28 @@ namespace Authorization.Data
                     ClientSecret = "499D56FA-B47B-5199-BA61-B298D431C318",
                     DisplayName = "Student Management Asp.Net Core Api",
                     RedirectUris = {new Uri("https://localhost:7135/swagger/oauth2-redirect.html")},
+                    Permissions =
+                    {
+                        OpenIddictConstants.Permissions.Endpoints.Authorization,
+                        OpenIddictConstants.Permissions.Endpoints.Token,
+                        OpenIddictConstants.Permissions.Endpoints.Introspection,
+                        OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
+                        OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                        OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                        OpenIddictConstants.Permissions.ResponseTypes.Code,
+                        OpenIddictConstants.Scopes.OfflineAccess
+                    }
+                }).GetAwaiter().GetResult();
+            }
+
+            if (authorizeClientApp == null)
+            {
+                manager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "student-management-authorize",
+                    ClientSecret = "bf64a943-fc3d-4104-97bc-62b049b50f2c",
+                    DisplayName = "Student Management Authorize Service",
+                    RedirectUris = {new Uri("https://localhost:7059/swagger/oauth2-redirect.html")},
                     Permissions =
                     {
                         OpenIddictConstants.Permissions.Endpoints.Authorization,
