@@ -10,8 +10,8 @@ namespace Domain.Entities
         public string Username { get; private set; } = default!;
         public string Email { get; private set; } = default!;
 
-        public string? Firstname { get; private set; }
-        public string? Lastname { get; private set; }
+        public string? Firstname { get; set; }
+        public string? Lastname { get; set; }
 
         public Account()
         {

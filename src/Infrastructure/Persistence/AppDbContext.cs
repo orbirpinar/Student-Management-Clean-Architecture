@@ -52,6 +52,7 @@ namespace Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            
             builder.Entity<StudentScore>()
                 .HasKey(ss => new {ss.StudentId, ss.ExamId});
             builder.Entity<StudentScore>()
@@ -74,6 +75,9 @@ namespace Infrastructure.Persistence
                 .WithMany(s => s.TeacherSubjects)
                 .HasForeignKey(ss => ss.TeacherId);
 
+        
+
+
             //Value Object
             builder.Entity<Teacher>().OwnsOne(t => t.Account, navigationBuilder =>
             {
@@ -83,7 +87,9 @@ namespace Infrastructure.Persistence
                 navigationBuilder.Property(account => account.Username).HasColumnName("Username");
                 navigationBuilder.Property(account => account.Firstname).HasColumnName("Firstname");
                 navigationBuilder.Property(account => account.Lastname).HasColumnName("Lastname");
-                
+                navigationBuilder.HasIndex(a => a.Id).IsUnique();
+                navigationBuilder.HasIndex(a => a.Email).IsUnique();
+                navigationBuilder.HasIndex(a => a.Firstname).IsUnique();
             });
         }
     }

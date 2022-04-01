@@ -54,7 +54,7 @@ namespace WebUI.Controllers
             }
 
             await _mediator.Send(command);
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id:guid}")]

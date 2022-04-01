@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Application.Features.Teacher.Commands.CreateTeacher;
+using Application.Features.Teacher.Commands;
 using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;

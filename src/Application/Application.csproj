@@ -9,7 +9,6 @@
     <ItemGroup>
       <Folder Include="Features\Account\Command" />
       <Folder Include="Features\ClassRoom" />
-      <Folder Include="Features\Teacher\Queries" />
     </ItemGroup>
 
     <ItemGroup>

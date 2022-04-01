@@ -1,15 +1,14 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Authorization.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace Authorization.Features.User
+namespace Authorization.Features.User.Commands
 {
-    public class UpdateUser: IRequest<Unit>
+    public class UpdateUserCommand: IRequest<Unit>
     {
-        public UpdateUser(string id, string? email, string? username, string? firstname, string? lastname)
+        public UpdateUserCommand(string id, string? email, string? username, string? firstname, string? lastname)
         {
             Id = id;
             Email = email;
@@ -25,7 +24,7 @@ namespace Authorization.Features.User
         public string? Lastname { get; }
     }
 
-    public class UpdateUserCommandHandler : IRequestHandler<UpdateUser, Unit>
+    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Unit>
     {
         private readonly UserManager<Entities.User> _userManager;
 
@@ -34,7 +33,7 @@ namespace Authorization.Features.User
             _userManager = userManager;
         }
 
-        public async Task<Unit> Handle(UpdateUser request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByIdAsync(request.Id);
             if (user is null)

@@ -7,7 +7,7 @@ namespace Domain.Entities
     public class Teacher: AuditableEntity
     {
         public Guid Id { get; set; }
-        public Account? Account { get; set; }
+        public Account Account { get; set; } = null!;
         public DateOnly? BirthDate { get; set; }
         public string? Phone { get; set; }
         public string? ProfilePicture { get; set; }

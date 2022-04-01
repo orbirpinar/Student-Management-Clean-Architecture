@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Authorization.Features.User
 {
-    public class AttachRoleToUser: IRequest<Unit>
+    public class AttachRoleToUserCommand: IRequest<Unit>
     {
         public string UserId { get; set; } = null!;
         public string RoleName { get; set; } = null!;
     }
     
-    public class AttachRoleToUserCommandHandler: IRequestHandler<AttachRoleToUser,Unit>
+    public class AttachRoleToUserCommandHandler: IRequestHandler<AttachRoleToUserCommand,Unit>
     {
         private readonly UserManager<Entities.User> _userManager;
 
@@ -21,7 +21,7 @@ namespace Authorization.Features.User
             _userManager = userManager;
         }
 
-        public async Task<Unit> Handle(AttachRoleToUser request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AttachRoleToUserCommand request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByIdAsync(request.UserId);
             if (user is null)

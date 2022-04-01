@@ -12,7 +12,7 @@ namespace Authorization.Api.Controller
 {
     [ApiController]
     [Route("api/roles")]
-    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "ADMIN",AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public class RoleController: ControllerBase
     {
         private readonly IMediator _mediator;

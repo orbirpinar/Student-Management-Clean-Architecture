@@ -15,6 +15,8 @@ namespace Application
             services.AddMassTransit(x =>
             {
                 x.AddConsumers(typeof(UserRegisteredConsumer).Assembly);
+                x.AddConsumers(typeof(UserUpdatedConsumer).Assembly);
+                x.AddConsumers(typeof(UserDeletedConsumer).Assembly);
                 x.SetKebabCaseEndpointNameFormatter();
                 x.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
@@ -26,6 +28,14 @@ namespace Application
                   cfg.ReceiveEndpoint("user-register",  e=>
                   {
                       e.ConfigureConsumer<UserRegisteredConsumer>(_);
+                  });
+                  cfg.ReceiveEndpoint("user-updated",  e=>
+                  {
+                      e.ConfigureConsumer<UserUpdatedConsumer>(_);
+                  });
+                  cfg.ReceiveEndpoint("user-deleted",  e=>
+                  {
+                      e.ConfigureConsumer<UserDeletedConsumer>(_);
                   });
                 }));
             });

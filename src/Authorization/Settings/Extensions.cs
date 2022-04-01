@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using Authorization.Common.Settings;
+using Authorization.Consumer;
 using Authorization.Data;
 using Authorization.Entities;
 using Authorization.Services;
@@ -25,7 +26,7 @@ namespace Authorization.Settings
             });
         }
 
-        public static void AddOpenIdConnect(this IServiceCollection services,IConfiguration configuration)
+        public static void AddOpenIdConnect(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<IdentityOptions>(options =>
             {
@@ -68,7 +69,6 @@ namespace Authorization.Settings
                 })
                 .AddValidation(options =>
                 {
-                    
                     options.SetIssuer(openIddictConfig.Issuer);
                     options.AddAudiences(openIddictConfig.ClientId);
                     options.UseIntrospection()
@@ -81,7 +81,7 @@ namespace Authorization.Settings
                     options.AddAudiences("student-management-authorize");
                 });
 
-services.AddHttpClient(typeof(OpenIddictValidationSystemNetHttpOptions).Assembly.GetName().Name)
+            services.AddHttpClient(typeof(OpenIddictValidationSystemNetHttpOptions).Assembly.GetName().Name)
                 .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler {ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator});
             services.AddDefaultIdentity<User>()
                 .AddRoles<IdentityRole>()
@@ -93,15 +93,19 @@ services.AddHttpClient(typeof(OpenIddictValidationSystemNetHttpOptions).Assembly
             services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-                x.UsingRabbitMq((context, cfg) =>
+                x.AddConsumer<UserUpdatedConsumer>();
+                x.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
-                    cfg.Host("rabbitmq://localhost",  h =>
+                    cfg.Host("rabbitmq://localhost", h =>
                     {
                         h.Username("guest");
                         h.Password("guest");
                     });
-                    cfg.ConfigureEndpoints(context);
-                });
+                    cfg.ReceiveEndpoint("teacher-account-updated", e =>
+                    {
+                        e.ConfigureConsumer<UserUpdatedConsumer>(_);
+                    });
+                }));
             });
         }
     }

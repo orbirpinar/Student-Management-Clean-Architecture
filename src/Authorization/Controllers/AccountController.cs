@@ -1,3 +1,4 @@
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Authorization.Entities;
@@ -76,11 +77,24 @@ namespace Authorization.Controllers
         public async Task<IActionResult> Register(RegisterViewModel register)
         {
             if (!ModelState.IsValid) return View();
-            var user = new User {UserName = register.Email, Email = register.Email};
+            var user = new User
+            {
+                UserName = register.Username, 
+                Email = register.Email,
+                Firstname = register.Firstname,
+                Lastname = register.Lastname
+            };
             var result = await _userManager.CreateAsync(user, register.Password);
             if (result.Succeeded)
             {
-                await _bus.Publish<UserRegistered>(new {user.Id,user.Email, user.UserName,user.Firstname,user.Lastname});
+                await _bus.Publish<UserRegistered>(new
+                {
+                    Id = new Guid(user.Id),
+                    Username = user.UserName,
+                    Email = user.Email,
+                    Firstname = user.Firstname,
+                    Lastname = user.Lastname
+                });
                 await _signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
             }

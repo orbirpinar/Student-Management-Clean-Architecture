@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Authorization.Api.Request;
 using Authorization.Features.Role.Queries;
 using Authorization.Features.User;
+using Authorization.Features.User.Commands;
+using Authorization.Features.User.Queries;
 using Authorization.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +15,7 @@ namespace Authorization.Api.Controller
 {
     [ApiController]
     [Route("api/users")]
-    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "ADMIN",AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public class UserController: ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,22 +26,22 @@ namespace Authorization.Api.Controller
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateUser(string id,[FromBody] UpdateUser user)
+        public async Task Update(string id,[FromBody] UpdateUserCommand userCommand)
         {
-            user.Id = id;
-            await _mediator.Send(user);
+            userCommand.Id = id;
+            await _mediator.Send(userCommand);
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteUser(string id)
+        public async Task Delete(string id)
         {
-            await _mediator.Send(new DeleteUser(id));
+            await _mediator.Send(new DeleteUserCommand(id));
         }
 
         [HttpPut("{id}/roles")]
         public async Task AssignRole(string id,AttachRoleToUserRequest request)
         {
-            var command = new AttachRoleToUser {RoleName = request.RoleName,UserId = id};
+            var command = new AttachRoleToUserCommand {RoleName = request.RoleName,UserId = id};
             await _mediator.Send(command);
         }
         
@@ -50,9 +52,9 @@ namespace Authorization.Api.Controller
         }
 
         [HttpGet]
-        public async Task<List<UserViewModel>> GetAllUsers()
+        public async Task<List<UserViewModel>> GetAll()
         {
-            return await _mediator.Send(new GetAllUsers());
+            return await _mediator.Send(new GetAllUsersQuery());
         }
     }
 }

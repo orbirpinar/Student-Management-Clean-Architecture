@@ -1,6 +1,7 @@
 using System.Reflection;
 using Authorization.Common.Swagger;
 using Authorization.Data;
+using Authorization.Services;
 using Authorization.Settings;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -22,6 +23,7 @@ builder.Services.AddOpenIdConnect(builder.Configuration);
 builder.Services.AddRabbitMq();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddSwagger(builder.Configuration);
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 var app = builder.Build();
 

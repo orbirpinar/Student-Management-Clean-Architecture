@@ -1,12 +1,11 @@
 using System;
-using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Teacher.Commands.CreateTeacher
+namespace Application.Features.Teacher.Commands
 {
     public class CreateTeacherAccountCommand : IRequest<Guid>
     {
