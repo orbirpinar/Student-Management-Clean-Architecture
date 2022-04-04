@@ -12,9 +12,9 @@ namespace Domain.Entities
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public Gender Gender { get; set; }
-        public DateOnly BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
         public string? ProfilePicture { get; set; }
-        public Guid? ClassRommId { get; set; }
+        public Guid? ClassRoomId { get; set; }
         public ClassRoom? ClassRoom { get; set; }
         public ICollection<StudentScore>? StudentScores { get; set; }
     }

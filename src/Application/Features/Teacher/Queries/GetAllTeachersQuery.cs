@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Common.Mapping;
+using Application.Features.Teacher.Dtos;
 using Application.Interfaces;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,15 +17,20 @@ namespace Application.Features.Teacher.Queries
     public class GetAllTeachersQueryHandler: IRequestHandler<GetAllTeachersQuery,List<TeacherViewDto>>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper; 
 
-        public GetAllTeachersQueryHandler(IApplicationDbContext context)
+        public GetAllTeachersQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public Task<List<TeacherViewDto>> Handle(GetAllTeachersQuery request, CancellationToken cancellationToken)
+        public async Task<List<TeacherViewDto>> Handle(GetAllTeachersQuery request, CancellationToken cancellationToken)
         {
-            return _context.Teachers.Select(t => t.ToViewDto()).ToListAsync(cancellationToken);
+            var teachers = await _context.Teachers
+                .Include(t => t.MainClassRoom)
+                .ToListAsync(cancellationToken);
+            return _mapper.Map<List<TeacherViewDto>>(teachers);
         }
     }
 }

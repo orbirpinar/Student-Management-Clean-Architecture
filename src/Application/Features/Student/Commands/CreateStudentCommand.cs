@@ -5,25 +5,17 @@ using Application.Interfaces;
 using Domain.Enums;
 using MediatR;
 
-namespace Application.Features.Student.Commands.CreateStudent
+namespace Application.Features.Student.Commands
 {
     public class CreateStudentCommand : IRequest<Guid>
     {
-        public CreateStudentCommand(string? firstName, string? lastName, Gender gender, DateOnly birthDate, string? profilePicture)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-            Gender = gender;
-            BirthDate = birthDate;
-            ProfilePicture = profilePicture;
-        }
 
-        public string SchoolNumber { get; } = null!;
-        public string? FirstName { get; }
-        public string? LastName { get; }
-        public Gender Gender { get; }
-        public DateOnly BirthDate { get; }
-        public string? ProfilePicture { get; }
+        public string SchoolNumber { get; set; } = null!;
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public Gender Gender { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string? ProfilePicture { get; set; }
     }
 
 

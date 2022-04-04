@@ -22,6 +22,7 @@ namespace Infrastructure.Persistence
         }
 
 
+
         public DbSet<Teacher> Teachers => Set<Teacher>();
         public DbSet<Student> Students => Set<Student>();
         public DbSet<Subject> Subjects => Set<Subject>();
@@ -75,7 +76,11 @@ namespace Infrastructure.Persistence
                 .WithMany(s => s.TeacherSubjects)
                 .HasForeignKey(ss => ss.TeacherId);
 
-        
+            builder.Entity<ClassRoom>().HasOne(c => c.MainTeacher)
+                .WithOne(t => t.MainClassRoom)
+                .HasForeignKey<ClassRoom>(c => c.MainTeacherId);
+
+
 
 
             //Value Object

@@ -7,7 +7,12 @@ namespace Domain.Entities
     public class ClassRoom : AuditableEntity
     {
         public Guid Id { get; set; }
-        public string Name { get; set; } = default!;
+        public byte Grade { get; set; }
+
+        public string Group { get; set; } = default!;
+        
+        public Teacher? MainTeacher { get; set; }
+        public Guid? MainTeacherId { get; set; }
         public ICollection<Student>? Students { get; set; }
     }
 }

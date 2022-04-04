@@ -8,9 +8,13 @@ namespace Domain.Entities
     {
         public Guid Id { get; set; }
         public Account Account { get; set; } = null!;
-        public DateOnly? BirthDate { get; set; }
+        
+        public DateTime? BirthDate { get; set; }
         public string? Phone { get; set; }
         public string? ProfilePicture { get; set; }
+        
+        public ClassRoom? MainClassRoom { get; set; }
+        
         public ICollection<TeacherSubject>? TeacherSubjects { get; set; }
     }
 }

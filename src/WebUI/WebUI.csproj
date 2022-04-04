@@ -9,9 +9,6 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="10.4.0" />
-        <PackageReference Include="IdentityServer4" Version="4.1.2" />
-        <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
-        <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3">
           <PrivateAssets>all</PrivateAssets>
@@ -26,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Requests" />
       <Folder Include="Services" />
     </ItemGroup>
 

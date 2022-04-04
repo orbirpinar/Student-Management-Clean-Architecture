@@ -20,7 +20,7 @@ namespace Application.Features.Teacher.Commands
             Id = id;
         }
 
-        public DateOnly? BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         public string? ProfilePicture { get; set; }
 

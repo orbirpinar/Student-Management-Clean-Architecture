@@ -7,11 +7,11 @@ using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Student.Commands.UpdateStudent
+namespace Application.Features.Student.Commands
 {
     public class UpdateStudentCommand : IRequest
     {
-        public UpdateStudentCommand(Guid id, string? schoolNumber, string? firstName, string? lastName, Gender gender, DateOnly birthDate, string? profilePicture)
+        public UpdateStudentCommand(Guid id, string? schoolNumber, string? firstName, string? lastName, Gender gender, DateTime birthDate, string? profilePicture)
         {
             Id = id;
             SchoolNumber = schoolNumber;
@@ -27,7 +27,7 @@ namespace Application.Features.Student.Commands.UpdateStudent
         public string? FirstName { get; }
         public string? LastName { get; }
         public Gender Gender { get; }
-        public DateOnly BirthDate { get; }
+        public DateTime BirthDate { get; }
         public string? ProfilePicture { get; }
     }
 

@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Application.Features.Teacher.Commands;
+using Application.Features.Teacher.Dtos;
 using Application.Features.Teacher.Queries;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WebUI.Responses;
 
 namespace WebUI.Controllers
 {
@@ -33,6 +32,19 @@ namespace WebUI.Controllers
         public async Task<List<TeacherViewDto>> GetAll()
         {
             return await _mediator.Send(new GetAllTeachersQuery());
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<TeacherViewDto> GetById(Guid id)
+        {
+            return await _mediator.Send(new GetTeacherByIdQuery(id));
+        }
+
+        [HttpPut("{id:guid}/class-rooms")]
+        public async Task AttachMainClassRoom(Guid id,AttachTeacherAClassRoomCommand command)
+        {
+            command.TeacherId = id;
+            await _mediator.Send(command);
         }
     }
 }

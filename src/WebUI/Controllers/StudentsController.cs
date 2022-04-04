@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Application.Features.Student.Commands.CreateStudent;
-using Application.Features.Student.Commands.DeleteStudent;
-using Application.Features.Student.Commands.UpdateStudent;
+using Application.Features.Student.Commands;
+using Application.Features.Student.Dtos;
 using Application.Features.Student.Queries;
-using Application.Features.Student.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,13 +25,13 @@ namespace WebUI.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<StudentResponse>>> GetAll()
+        public async Task<ActionResult<List<StudentWithClassRoomViewDto>>> GetAll()
         {
             return await _mediator.Send(new GetAllStudentQuery());
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<StudentResponse>> GetById(Guid id)
+        public async Task<ActionResult<StudentWithClassRoomViewDto>> GetById(Guid id)
         {
             return await _mediator.Send(new GetStudentByIdQuery(id));
         }
@@ -62,6 +60,21 @@ namespace WebUI.Controllers
         {
             await _mediator.Send(new DeleteStudentCommand(id));
             return NoContent();
+        }
+
+        [HttpPost("{id:guid}/class-rooms")]
+        public async Task<IActionResult> AttendToClassRoom(Guid id, AttendStudentToClassRoomCommand command)
+        {
+            command.StudentId = id;
+            await _mediator.Send(command);
+            return Ok();
+        }
+
+        [HttpPost("multiple/class-rooms")]
+        public async Task<IActionResult> AttendManyStudentsToClassRoom(AttendManyStudentsToClassRoomCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok();
         }
         
         

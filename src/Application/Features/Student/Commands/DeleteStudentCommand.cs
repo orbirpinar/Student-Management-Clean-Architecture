@@ -5,7 +5,7 @@ using Application.Common.Exceptions;
 using Application.Interfaces;
 using MediatR;
 
-namespace Application.Features.Student.Commands.DeleteStudent
+namespace Application.Features.Student.Commands
 {
     public class DeleteStudentCommand: IRequest
     {

@@ -1,7 +1,7 @@
 using System;
-using System.Linq.Expressions;
+using Application.Features.ClassRoom.Dtos;
 
-namespace Application.Features.Teacher.Queries
+namespace Application.Features.Teacher.Dtos
 {
     public class TeacherViewDto
     {
@@ -11,9 +11,11 @@ namespace Application.Features.Teacher.Queries
         public string Email { get;  set; } = default!;
         public string? Firstname { get; set; }
         public string? Lastname { get; set; }
-        public DateOnly? BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public string? Phone { get; set; }
         public string? ProfilePicture { get; set; }
+        
+        public ClassRoomViewDto? MainClassRoom { get; set; }
         
         
     }
