@@ -5,26 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "ClassRoom",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: true),
-                    LastModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClassRoom", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Subjects",
                 columns: table => new
@@ -46,9 +30,12 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: true),
-                    LastName = table.Column<string>(type: "text", nullable: true),
-                    BirthDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Firstname = table.Column<string>(type: "text", nullable: true),
+                    Lastname = table.Column<string>(type: "text", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Phone = table.Column<string>(type: "text", nullable: true),
                     ProfilePicture = table.Column<string>(type: "text", nullable: true),
                     Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -62,18 +49,13 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Students",
+                name: "ClassRoom",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SchoolNumber = table.Column<string>(type: "text", nullable: true),
-                    FirstName = table.Column<string>(type: "text", nullable: true),
-                    LastName = table.Column<string>(type: "text", nullable: true),
-                    Gender = table.Column<int>(type: "integer", nullable: false),
-                    BirthDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    ProfilePicture = table.Column<string>(type: "text", nullable: true),
-                    ClassRommId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ClassRoomId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Grade = table.Column<byte>(type: "smallint", nullable: false),
+                    Group = table.Column<string>(type: "text", nullable: false),
+                    MainTeacherId = table.Column<Guid>(type: "uuid", nullable: true),
                     Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -81,65 +63,12 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Students", x => x.Id);
+                    table.PrimaryKey("PK_ClassRoom", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Students_ClassRoom_ClassRoomId",
-                        column: x => x.ClassRoomId,
-                        principalTable: "ClassRoom",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Exams",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SubjectId1 = table.Column<Guid>(type: "uuid", nullable: false),
-                    SubjectId = table.Column<string>(type: "text", nullable: false),
-                    ClassRoomId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClassRommId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: true),
-                    LastModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Exams", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Exams_ClassRoom_ClassRoomId",
-                        column: x => x.ClassRoomId,
-                        principalTable: "ClassRoom",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Exams_Subjects_SubjectId1",
-                        column: x => x.SubjectId1,
-                        principalTable: "Subjects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Accounts",
-                columns: table => new
-                {
-                    TeacherId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserName = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Firstname = table.Column<string>(type: "text", nullable: true),
-                    Lastname = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Accounts", x => x.TeacherId);
-                    table.ForeignKey(
-                        name: "FK_Accounts_Teachers_TeacherId",
-                        column: x => x.TeacherId,
+                        name: "FK_ClassRoom_Teachers_MainTeacherId",
+                        column: x => x.MainTeacherId,
                         principalTable: "Teachers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -164,6 +93,63 @@ namespace Infrastructure.Migrations
                         principalTable: "Teachers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Exams",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SubjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClassRoomId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClassRommId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Exams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Exams_ClassRoom_ClassRoomId",
+                        column: x => x.ClassRoomId,
+                        principalTable: "ClassRoom",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Exams_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SchoolNumber = table.Column<string>(type: "text", nullable: true),
+                    FirstName = table.Column<string>(type: "text", nullable: true),
+                    LastName = table.Column<string>(type: "text", nullable: true),
+                    Gender = table.Column<int>(type: "integer", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ProfilePicture = table.Column<string>(type: "text", nullable: true),
+                    ClassRoomId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Students", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Students_ClassRoom_ClassRoomId",
+                        column: x => x.ClassRoomId,
+                        principalTable: "ClassRoom",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -192,14 +178,20 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClassRoom_MainTeacherId",
+                table: "ClassRoom",
+                column: "MainTeacherId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Exams_ClassRoomId",
                 table: "Exams",
                 column: "ClassRoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exams_SubjectId1",
+                name: "IX_Exams_SubjectId",
                 table: "Exams",
-                column: "SubjectId1");
+                column: "SubjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Students_ClassRoomId",
@@ -212,6 +204,24 @@ namespace Infrastructure.Migrations
                 column: "ExamId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Teachers_AccountId",
+                table: "Teachers",
+                column: "AccountId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teachers_Email",
+                table: "Teachers",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teachers_Firstname",
+                table: "Teachers",
+                column: "Firstname",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TeacherSubjects_TeacherId",
                 table: "TeacherSubjects",
                 column: "TeacherId");
@@ -219,9 +229,6 @@ namespace Infrastructure.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Accounts");
-
             migrationBuilder.DropTable(
                 name: "StudentScores");
 
@@ -235,13 +242,13 @@ namespace Infrastructure.Migrations
                 name: "Students");
 
             migrationBuilder.DropTable(
-                name: "Teachers");
-
-            migrationBuilder.DropTable(
                 name: "Subjects");
 
             migrationBuilder.DropTable(
                 name: "ClassRoom");
+
+            migrationBuilder.DropTable(
+                name: "Teachers");
         }
     }
 }

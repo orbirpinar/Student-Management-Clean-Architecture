@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Application;
 using Infrastructure;
 using Infrastructure.Identity;
+using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -83,5 +84,6 @@ app.UseEndpoints(endpoints =>
 });
 
 app.MapControllers();
+app.Seed();
 
 app.Run();

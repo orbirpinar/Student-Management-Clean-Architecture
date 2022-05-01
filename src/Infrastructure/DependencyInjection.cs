@@ -1,5 +1,3 @@
-using System;
-using System.Net.Http;
 using Application.Interfaces;
 using Infrastructure.Identity;
 using Infrastructure.Persistence;

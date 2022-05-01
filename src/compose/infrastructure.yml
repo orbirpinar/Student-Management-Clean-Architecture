@@ -6,11 +6,12 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-school_admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      POSTGRES_DB: school
       PGDATA: /data/postgres
     volumes:
       - school_postgres:/data/postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     restart: unless-stopped
     networks:
       - school_app_network
