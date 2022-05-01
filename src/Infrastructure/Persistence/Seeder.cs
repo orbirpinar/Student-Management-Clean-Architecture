@@ -15,14 +15,18 @@ public static class Seeder
         using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.Database.EnsureCreated();
-        var classRooms = GetAllClassRoom();
+        var classRooms = GetAllClassRooms();
         if (context.ClassRoom.FirstOrDefault() is null)
         {
             context.ClassRoom.AddRange(classRooms);
             context.SaveChanges();
             SeedStudents(context);
         }
+        context.Subjects.AddRange(GetAllSubjects());
+        context.SaveChanges();
     }
+
+    
 
     private static void SeedStudents(AppDbContext context)
     {
@@ -44,7 +48,8 @@ public static class Seeder
             var grade = csvReader.GetField(5);
             var group = csvReader.GetField(6);
 
-            var classRoom = context.ClassRoom.FirstOrDefault(x => x.Group.Equals(group) && x.Grade == byte.Parse(grade));
+            var classRoom =
+                context.ClassRoom.FirstOrDefault(x => x.Group.Equals(group) && x.Grade == byte.Parse(grade));
             if (classRoom is not null)
             {
                 context.Students.Add(new Student
@@ -63,7 +68,25 @@ public static class Seeder
         }
     }
 
-    private static IEnumerable<ClassRoom> GetAllClassRoom()
+    private static IEnumerable<Subject> GetAllSubjects()
+    {
+        return new List<Subject>
+        {
+            new() {Name = "Turkish"},
+            new() {Name = "English"},
+            new() {Name = "Education of Religion and Ethics"},
+            new() {Name = "Science"},
+            new() {Name = "Music"},
+            new() {Name = "Art"},
+            new() {Name = "Math"},
+            new() {Name = "Social Studies"},
+            new() {Name = "Technology and Design"},
+            new() {Name = "Gym"}
+        };
+    }
+
+
+    private static IEnumerable<ClassRoom> GetAllClassRooms()
     {
         return new List<ClassRoom>
         {

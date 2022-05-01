@@ -1,9 +1,14 @@
 using System;
+using System.Globalization;
 using Authorization.Entities;
+using CsvHelper;
+using CsvHelper.Configuration;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using OpenIddict.Abstractions;
+using Shared.Events;
 
 namespace Authorization.Data
 {
@@ -17,7 +22,8 @@ namespace Authorization.Data
 
             var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
             var studentClientApp = manager.FindByClientIdAsync("student-management-api").GetAwaiter().GetResult();
-            var authorizeClientApp = manager.FindByClientIdAsync("student-management-authorize").GetAwaiter().GetResult();
+            var authorizeClientApp =
+                manager.FindByClientIdAsync("student-management-authorize").GetAwaiter().GetResult();
             if (studentClientApp == null)
             {
                 manager.CreateAsync(new OpenIddictApplicationDescriptor
@@ -66,14 +72,55 @@ namespace Authorization.Data
         internal static void SeedUser(this IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            var user = new User {UserName = "test_user"};
-
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            var existingUser = userManager.FindByNameAsync(user.UserName).GetAwaiter().GetResult();
-            if (existingUser != null) return;
-            var hash = userManager.PasswordHasher.HashPassword(user, "Test1234!");
-            user.PasswordHash = hash;
-            userManager.CreateAsync(user).GetAwaiter().GetResult();
+            var bus = scope.ServiceProvider.GetRequiredService<IBus>();
+
+            var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
+            {
+                HasHeaderRecord = false, Comment = '#', AllowComments = true, Delimiter = ","
+            };
+            const string path = "./Data/teachers.csv";
+            using var streamReader = File.OpenText(path);
+            using var csvReader = new CsvReader(streamReader, csvConfig);
+            while (csvReader.Read())
+            {
+                var fullName = csvReader.GetField(0);
+                var email = TurkishCharacterToEnglish(csvReader.GetField(1));
+                var firstName = fullName.Split(" ")[0];
+                var lastName = fullName.Split(" ")[1];
+                var username = TurkishCharacterToEnglish(fullName.Replace(" ", ".").ToLower());
+                var user = new User {UserName = username, Email = email, Firstname = firstName, Lastname = lastName};
+                const string password = "Test1234!";
+                SeedUser(user, password, userManager,bus);
+            }
+
+        }
+
+        private  static void SeedUser(User user, string password, UserManager<User> userManager,IPublishEndpoint bus)
+        {
+            var result = userManager.CreateAsync(user, password).GetAwaiter().GetResult();
+            if (result.Succeeded)
+            {
+                 bus.Publish<UserRegistered>(new
+                {
+                    Id = new Guid(user.Id),
+                    Username = user.UserName,
+                    user.Email,
+                    user.Firstname,
+                    user.Lastname
+                });
+            }
+        }
+        public static string TurkishCharacterToEnglish(string text)
+        {
+            char[] turkishChars = {'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü'};
+            char[] englishChars = {'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U'};
+            
+            // Match chars
+            for (int i = 0; i < turkishChars.Length; i++)
+                text = text.Replace(turkishChars[i], englishChars[i]);
+        
+            return text;
         }
     }
 }

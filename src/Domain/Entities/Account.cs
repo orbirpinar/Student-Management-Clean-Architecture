@@ -7,8 +7,8 @@ namespace Domain.Entities
     public class Account : ValueObject
     {
         public Guid Id { get; private set; }
-        public string Username { get; private set; } = default!;
-        public string Email { get; private set; } = default!;
+        public string Username { get;  set; } = default!;
+        public string Email { get; set; } = default!;
 
         public string? Firstname { get; set; }
         public string? Lastname { get; set; }

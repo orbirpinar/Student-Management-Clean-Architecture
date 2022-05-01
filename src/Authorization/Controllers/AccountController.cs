@@ -91,9 +91,9 @@ namespace Authorization.Controllers
                 {
                     Id = new Guid(user.Id),
                     Username = user.UserName,
-                    Email = user.Email,
-                    Firstname = user.Firstname,
-                    Lastname = user.Lastname
+                    user.Email,
+                    user.Firstname,
+                    user.Lastname
                 });
                 await _signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
