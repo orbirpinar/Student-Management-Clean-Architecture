@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <Folder Include="Features\ClassRoom" />
+      <Folder Include="Features\Exam\Queries" />
     </ItemGroup>
 
     <ItemGroup>

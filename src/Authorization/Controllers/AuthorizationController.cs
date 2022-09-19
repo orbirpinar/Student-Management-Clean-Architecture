@@ -4,10 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Authorization.Entities;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
@@ -17,6 +19,15 @@ namespace Authorization.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class AuthorizationController : Controller
     {
+
+        private readonly SignInManager<User> _signInManager;
+
+        public AuthorizationController(SignInManager<User> signInManager)
+        {
+            _signInManager = signInManager;
+        }
+
+
         [HttpPost("~/connect/token")]
         public async Task<IActionResult> Exchange()
         {
@@ -52,7 +63,7 @@ namespace Authorization.Controllers
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
             return SignIn(claimsPrincipal!, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
-        
+
         [HttpGet("~/connect/authorize")]
         [HttpPost("~/connect/authorize")]
         [IgnoreAntiforgeryToken]
@@ -60,10 +71,10 @@ namespace Authorization.Controllers
         {
             var request = HttpContext.GetOpenIddictServerRequest() ??
                 throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
-        
+
             // Retrieve the user principal stored in the authentication cookie.
             var result = await HttpContext.AuthenticateAsync();
-        
+
             // If the user principal can't be extracted, redirect the user to the login page.
             if (!result.Succeeded)
             {
@@ -75,23 +86,32 @@ namespace Authorization.Controllers
                             Request.HasFormContentType ? Request.Form.ToList() : Request.Query.ToList())
                     });
             }
-        
+
             // Create a new claims principal
             var claims = new List<Claim>
             {
                 // 'subject' claim which is required
                 new Claim(OpenIddictConstants.Claims.Subject, result.Principal.Identity!.Name!),
             };
-        
+
             var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-        
+
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             claimsPrincipal.SetAudiences(request.ClientId!);
             // Set requested scopes (this is not done automatically)
             claimsPrincipal.SetScopes(request.GetScopes());
-            
-        
+
+
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        }
+
+        [HttpPost("~/connect/logout")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogOut()
+        {
+            await _signInManager.SignOutAsync();
+
+            return SignOut(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
     }
 }

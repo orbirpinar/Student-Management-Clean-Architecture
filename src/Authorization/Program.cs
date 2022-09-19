@@ -43,7 +43,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors(options => options.WithOrigins("https://localhost:7135").AllowAnyMethod().AllowAnyHeader());
+app.UseCors(options =>
+    {
+        options.WithOrigins("https://localhost:7135").AllowAnyMethod().AllowAnyHeader();
+        options.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+    });
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>

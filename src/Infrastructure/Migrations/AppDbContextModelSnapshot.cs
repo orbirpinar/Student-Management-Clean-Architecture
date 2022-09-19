@@ -64,9 +64,6 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ClassRommId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("ClassRoomId")
                         .HasColumnType("uuid");
 
@@ -75,6 +72,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("ExamDateTime")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("timestamp without time zone");

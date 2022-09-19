@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Authorization.Common.Exceptions;
 using Authorization.Entities;
 using MassTransit;

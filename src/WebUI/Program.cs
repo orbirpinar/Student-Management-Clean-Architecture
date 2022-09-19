@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(config =>
             AuthorizationCode = new OpenApiOAuthFlow
             {
                 AuthorizationUrl = new Uri(authorizationConfig.AuthorizationUrl),
-                TokenUrl = new Uri(authorizationConfig.TokenUrl),
+                TokenUrl = new Uri(authorizationConfig.TokenUrl)
             }
         }
 

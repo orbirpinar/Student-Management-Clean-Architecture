@@ -49,6 +49,8 @@ namespace Authorization.Settings
                     options.AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange();
                     options.AllowRefreshTokenFlow();
 
+
+
                     options.RegisterScopes(OpenIddictConstants.Permissions.Scopes.Email,
                         OpenIddictConstants.Scopes.OfflineAccess,
                         OpenIddictConstants.Permissions.Scopes.Profile,
@@ -82,7 +84,7 @@ namespace Authorization.Settings
                 });
 
             services.AddHttpClient(typeof(OpenIddictValidationSystemNetHttpOptions).Assembly.GetName().Name)
-                .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler {ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator});
+                .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator });
             services.AddDefaultIdentity<User>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
