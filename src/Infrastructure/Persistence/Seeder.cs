@@ -123,6 +123,6 @@ public static class Seeder
 
     private static Gender GenderConverter(string genderWithTurkish)
     {
-        return genderWithTurkish.Equals("Erkek") ? Gender.MALE : Gender.FEMALE;
+        return genderWithTurkish.Equals("Erkek") ? Gender.Male : Gender.Female;
     }
 }

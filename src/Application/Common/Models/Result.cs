@@ -9,7 +9,6 @@ namespace Application.Common.Models
     public class Result
     {
         
-        
 
         internal Result(bool succeeded, IEnumerable<string> errors)
         {

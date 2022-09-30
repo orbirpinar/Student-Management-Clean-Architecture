@@ -1,6 +1,4 @@
-using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Authorization.Entities;
 using Authorization.ViewModels;
 using MassTransit;

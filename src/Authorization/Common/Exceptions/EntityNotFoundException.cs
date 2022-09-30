@@ -1,4 +1,3 @@
-using System;
 
 namespace Authorization.Common.Exceptions
 {
