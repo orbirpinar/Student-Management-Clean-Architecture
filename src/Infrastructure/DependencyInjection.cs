@@ -25,6 +25,7 @@ namespace Infrastructure
             services.AddOpenIddict()
                 .AddValidation(options =>
                 {
+                    options.EnableTokenEntryValidation();
                     options.SetIssuer(openIddictConfig.Issuer);
                     options.AddAudiences(openIddictConfig.ClientId);
                     options.UseIntrospection()
@@ -37,8 +38,11 @@ namespace Infrastructure
 
             services.AddHttpClient(typeof(OpenIddictValidationSystemNetHttpOptions).Assembly.GetName().Name)
                 .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler {ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator});
+            services.AddHttpContextAccessor();
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+            services.AddScoped<IUserSession, UserSession>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddAuthentication(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
             services.AddAuthorization();
 

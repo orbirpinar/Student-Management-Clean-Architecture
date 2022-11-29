@@ -52,14 +52,8 @@ public static class Seeder
                 context.ClassRoom.FirstOrDefault(x => x.Group.Equals(group) && x.Grade == byte.Parse(grade));
             if (classRoom is not null)
             {
-                context.Students.Add(new Student
-                {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    SchoolNumber = schoolNumber,
-                    Gender = GenderConverter(gender),
-                    ClassRoomId = classRoom.Id
-                });
+                var student = Student.Create(schoolNumber, firstName, lastName, GenderConverter(gender), null, null);
+                context.Students.Add(student);
             }
 
             context.SaveChanges();

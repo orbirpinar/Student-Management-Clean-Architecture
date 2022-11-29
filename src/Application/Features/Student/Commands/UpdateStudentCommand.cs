@@ -11,7 +11,8 @@ namespace Application.Features.Student.Commands
 {
     public class UpdateStudentCommand : IRequest
     {
-        public UpdateStudentCommand(Guid id, string? schoolNumber, string? firstName, string? lastName, Gender gender, DateTime birthDate, string? profilePicture)
+        public UpdateStudentCommand(Guid id, string? schoolNumber, string? firstName, string? lastName, Gender gender,
+            DateTime birthDate, string? profilePicture)
         {
             Id = id;
             SchoolNumber = schoolNumber;
@@ -42,18 +43,19 @@ namespace Application.Features.Student.Commands
 
         public async Task<Unit> Handle(UpdateStudentCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Students.FirstAsync(x => x.Id == request.Id, cancellationToken);
-            if (entity == null)
+            var student = await _context.Students.FirstAsync(x => x.Id == request.Id, cancellationToken);
+            if (student == null)
             {
                 throw new NotFoundException(nameof(Domain.Entities.Student), request.Id.ToString());
             }
 
-            entity.SchoolNumber = request.SchoolNumber;
-            entity.FirstName = request.FirstName;
-            entity.LastName = request.LastName;
-            entity.Gender = request.Gender;
-            entity.BirthDate = request.BirthDate;
-            entity.ProfilePicture = request.ProfilePicture;
+            student.Update(
+                request.SchoolNumber, 
+                request.FirstName, 
+                request.LastName, 
+                request.Gender, 
+                request.BirthDate,
+                request.ProfilePicture );
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }

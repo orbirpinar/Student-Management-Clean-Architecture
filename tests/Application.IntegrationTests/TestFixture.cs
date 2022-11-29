@@ -8,6 +8,7 @@ using Bogus;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +30,12 @@ namespace Application.IntegrationTests
 
         public AppDbContext CreateContext(DbTransaction? transaction = null)
         {
-            var context = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlite(Connection).Options, new DateTimeService());
+            var context = new AppDbContext
+            (
+                new DbContextOptionsBuilder<AppDbContext>().UseSqlite(Connection).Options,
+                new DateTimeService(),
+                new CurrentUserService(new HttpContextAccessor())
+            );
             if (transaction != null)
             {
                 context.Database.UseTransaction(transaction);

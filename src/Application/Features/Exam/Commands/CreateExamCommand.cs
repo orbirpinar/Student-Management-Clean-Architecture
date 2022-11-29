@@ -40,10 +40,7 @@ public class CreateExamCommandHandler : IRequestHandler<CreateExamCommand, Guid>
             throw new NotFoundException(nameof(classRoom), request.ClassRoomId.ToString());
         }
 
-        var exam = new Domain.Entities.Exam
-        {
-            ClassRoom = classRoom, Subject = subject, ExamDateTime = request.ExamDateTime
-        };
+        var exam = Domain.Entities.Exam.Create(subject,classRoom,request.ExamDateTime);
         await _context.Exams.AddAsync(exam, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return exam.Id;
